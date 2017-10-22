@@ -2,8 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-function BattleText(props) {
-    return <h2>{props.text}</h2>;
+const under252 = (value) => {
+  if(value < 0) {
+    return 0
+  } else if(value > 252) {
+    return 252
+  } else {
+    return value
+  }
 }
 
 class EVCalcResults extends React.Component{
@@ -13,11 +19,11 @@ class EVCalcResults extends React.Component{
             defaultText: "Please provide input.",
         };
     }
-    
     render() {
         return (
             <div>
-            {Object.keys(this.props.evCalcResultData).length === 0 ? this.state.defaultText : calculateBattles(this.props.evCalcResultData)}
+            {Object.keys(this.props.evCalcResultData).length === 0 ? this.state.defaultText : calculateBattles(this.props.evCalcResultData).split('\n').map((item, key) => {return <span key = {key}>{item}<br/></span>
+            })}
             </div>
         )
     }
@@ -87,14 +93,18 @@ class EVCalcForm extends React.Component{
                         Beginning EVs: 
                         <input name="startingEVs" type="number"
                         value={this.state.startingEVs}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange} 
+                        min = "0"
+                        max = {this.state.targetEVs}/>
                     </label>
                     <br />
                     <label>
                         Target EVs:
                         <input name="targetEVs" type="number"
                         value={this.state.targetEVs}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                        min = "0"
+                        max = "252"/>
                     </label>
                     <br />
                     <label>
@@ -129,51 +139,46 @@ props.hasPwrItem
 props.evYield
 */
 function calculateBattles(props) {
-    var battleText = [];
+    var battleText = "";
     const chainBonus = 2;
     var evGain = props.evYield === "one" ? 1 : 2;
-    var noPwrItemGain = props.evYield;
+    var noPwrItemGain = evGain;
     var evNeeded = props.targetEVs - props.startingEVs;
     if(props.hasPwrItem) {
-        evGain += 8;
+        evGain = evGain + 8;
     }
     if(props.hasPkrs) {
-        evGain *= 2;
+        evGain = evGain * 2;
         noPwrItemGain *= 2;
     }
     var currEVs = props.startingEVs;
     var numChain = 1;
+    var battleText = "";
     while(evNeeded !== 0) {
         var evBattle = 0;
         var numKills = 0;
-        var tempText = "";
         if (evNeeded >= evGain*chainBonus && props.hasPwrItem) {
             evBattle = findEVs(evGain*chainBonus, evNeeded);
             numKills = Math.floor(evNeeded/evGain/chainBonus);
-            tempText = "For battle " + numChain + ", kill " + numKills + " (w/ power item + SOS).\n";
+            battleText += "For battle " + numChain + ", kill " + numKills + " (w/ power item + SOS).\n";
         } else if (evNeeded >= evGain && props.hasPwrItem) {
             evBattle = findEVs(evGain, evNeeded);
-            tempText = "For battle " + numChain + ", kill 1 Pokemon (w/ power item).\n";
+            battleText += "For battle " + numChain + ", kill 1 Pokemon (w/ power item).\n";
         } else if (evNeeded >= noPwrItemGain*chainBonus) {
             evBattle = findEVs(noPwrItemGain*chainBonus, evNeeded);
             numKills = Math.floor(evNeeded/noPwrItemGain/chainBonus);
-            tempText = "For battle " + numChain + ", kill " + numKills + " (no power item + SOS).\n";
+            battleText += "For battle " + numChain + ", kill " + numKills + " (no power item + SOS).\n";
         } else {
             evBattle = findEVs(noPwrItemGain, evNeeded);
-            tempText = "For battle " + numChain + ", kill 1 Pokemon (no power item).\n";
+            battleText += "For battle " + numChain + ", kill 1 Pokemon (no power item).\n";
         }
-        if (tempText.length !== 0) {
-            battleText.concat(tempText);
-        }
-        currEVs += evBattle;
+        currEVs = parseInt(currEVs, 10) + parseInt(evBattle, 10);
         battleText += "Current EVs: " + currEVs + ".\n";
         evNeeded = evNeeded - evBattle;
-        numChain += 1;
+        numChain = parseInt(numChain, 10) + 1;
     }
-    console.log(battleText);
-    return "";
+    return battleText;
 }
-
 function findEVs(ev, total) {
     return Math.floor(total/ev)*ev;
 }
