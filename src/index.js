@@ -2,16 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-const under252 = (value) => {
-  if(value < 0) {
-    return 0
-  } else if(value > 252) {
-    return 252
-  } else {
-    return value
-  }
-}
-
 class EVCalcResults extends React.Component{
     constructor(props) {
         super(props);
@@ -51,10 +41,6 @@ class EVCalcForm extends React.Component{
         this.setState({
             [name]: value
         });
-    }
-    
-    handleSelectChange = (event) => {
-        this.setState({evYield: event.target.value});
     }
     
     handleSubmit(event) {
@@ -109,7 +95,7 @@ class EVCalcForm extends React.Component{
                     <br />
                     <label>
                         Select EV yield: 
-                        <select value = {this.state.evYield} onChange={this.handleSelectChange}>
+                        <select name="evYield" value = {this.state.evYield} onChange={this.handleChange}>
                             <option value="one">1</option>
                             <option value="two">2</option>
                         </select>
@@ -123,8 +109,6 @@ class EVCalcForm extends React.Component{
         )
     }
 }
-
-
 
 // ========================================
 
@@ -144,17 +128,20 @@ function calculateBattles(props) {
     var evGain = props.evYield === "one" ? 1 : 2;
     var noPwrItemGain = evGain;
     var evNeeded = props.targetEVs - props.startingEVs;
+    var run = true;
     if(props.hasPwrItem) {
-        evGain = evGain + 8;
+        evGain += 8;
     }
     if(props.hasPkrs) {
-        evGain = evGain * 2;
+        evGain *= 2;
         noPwrItemGain *= 2;
     }
     var currEVs = props.startingEVs;
     var numChain = 1;
-    var battleText = "";
-    while(evNeeded !== 0) {
+    while(evNeeded > 0 && run) {
+        console.log(evNeeded);
+        console.log(currEVs);
+        console.log(props.targetEVs);
         var evBattle = 0;
         var numKills = 0;
         if (evNeeded >= evGain*chainBonus && props.hasPwrItem) {
@@ -170,15 +157,20 @@ function calculateBattles(props) {
             battleText += "For battle " + numChain + ", kill " + numKills + " (no power item + SOS).\n";
         } else {
             evBattle = findEVs(noPwrItemGain, evNeeded);
+            if(evNeeded === 1) {
+                run = false;
+                evBattle = 2;
+            }
             battleText += "For battle " + numChain + ", kill 1 Pokemon (no power item).\n";
         }
         currEVs = parseInt(currEVs, 10) + parseInt(evBattle, 10);
         battleText += "Current EVs: " + currEVs + ".\n";
-        evNeeded = evNeeded - evBattle;
+        evNeeded = parseInt(evNeeded, 10) - parseInt(evBattle, 10);
         numChain = parseInt(numChain, 10) + 1;
     }
     return battleText;
 }
+
 function findEVs(ev, total) {
     return Math.floor(total/ev)*ev;
 }
