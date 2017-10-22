@@ -139,9 +139,6 @@ function calculateBattles(props) {
     var currEVs = props.startingEVs;
     var numChain = 1;
     while(evNeeded > 0 && run) {
-        console.log(evNeeded);
-        console.log(currEVs);
-        console.log(props.targetEVs);
         var evBattle = 0;
         var numKills = 0;
         if (evNeeded >= evGain*chainBonus && props.hasPwrItem) {
@@ -157,9 +154,9 @@ function calculateBattles(props) {
             battleText += "For battle " + numChain + ", kill " + numKills + " (no power item + SOS).\n";
         } else {
             evBattle = findEVs(noPwrItemGain, evNeeded);
-            if(evNeeded === 1) {
+            if(evNeeded < noPwrItemGain) {
                 run = false;
-                evBattle = 2;
+                evBattle = noPwrItemGain;
             }
             battleText += "For battle " + numChain + ", kill 1 Pokemon (no power item).\n";
         }
