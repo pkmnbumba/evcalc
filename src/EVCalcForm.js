@@ -25,67 +25,63 @@ export default class EVCalcForm extends React.Component {
   
     render() {
       return (
-        <div>
-          <form className="container" onSubmit={this.handleSubmit}>
-            <h1>EV Battle Calculator</h1>
-            <label>
-              Has Pokerus:
-              <input
-                name="hasPkrs"
-                type="checkbox"
-                checked={this.state.hasPkrs}
-                onChange={this.handleChange}
-              />
-            </label>
-            <br />
-            <label>
-              Has Power Item:
-              <input
-                name="hasPwrItem"
-                type="checkbox"
-                checked={this.state.hasPwrItem}
-                onChange={this.handleChange}
-              />
-            </label>
-            <br />
-            <label>
-              Beginning EVs:
-              <input
-                name="startingEVs"
-                type="number"
-                value={this.state.startingEVs}
-                onChange={this.handleChange}
-                min="0"
-                max={this.state.targetEVs}
-              />
-            </label>
-            <br />
-            <label>
-              Target EVs:
-              <input
-                name="targetEVs"
-                type="number"
-                value={this.state.targetEVs}
-                onChange={this.handleChange}
-                min="0"
-                max="252"
-              />
-            </label>
-            <br />
-            <label>
-              Select EV yield:
-              <select
-                name="evYield"
-                value={this.state.evYield}
-                onChange={this.handleChange}
-              >
-                <option value="one">1</option>
-                <option value="two">2</option>
-              </select>
-            </label>
-            <br />
-          </form>
+        <div className="mainWrapper">
+          <h1>EV Battle Calculator</h1>
+          <label>
+            Has Pokérus
+            <input
+              name="hasPkrs"
+              type="checkbox"
+              checked={this.state.hasPkrs}
+              onChange={this.handleChange}
+            />
+          </label>
           <br />
+          <label>
+            Has Power Item
+            <input
+              name="hasPwrItem"
+              type="checkbox"
+              checked={this.state.hasPwrItem}
+              onChange={this.handleChange}
+            />
+          </label>
+          <br />
+          <label>
+            Beginning EVs
+            <input
+              name="startingEVs"
+              type="number"
+              value={this.state.startingEVs}
+              onChange={this.handleChange}
+              min="0"
+              max={this.state.targetEVs}
+            />
+          </label>
+          <br />
+          <label>
+            Target EVs
+            <input
+              name="targetEVs"
+              type="number"
+              value={this.state.targetEVs}
+              onChange={this.handleChange}
+              min="0"
+              max="252"
+            />
+          </label>
+          <br />
+          <label>
+            EV Yield
+            <select
+              name="evYield"
+              value={this.state.evYield}
+              onChange={this.handleChange}
+            >
+              <option value="one">1</option>
+              <option value="two">2</option>
+            </select>
+          </label>
           <EVCalcResults evCalcResultData={this.state} />
         </div>
       );

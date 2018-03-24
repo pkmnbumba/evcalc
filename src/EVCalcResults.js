@@ -1,13 +1,13 @@
 import React from "react";
 import calculateBattles from "./calc";
 
-const Mark = ({ val }) => <span className="mark">{val ? '✔️' : '✘'}</span>
+const Mark = ({ val }) => <span className="mark">{val ? '✓' : '✘'}</span>
 
 export default class EVCalcResults extends React.Component {
     render() {
       const res = calculateBattles(this.props.evCalcResultData);
       return (
-        <div>
+        <div className="tableWrapper">
           <table>
             <tbody>
               <tr>
