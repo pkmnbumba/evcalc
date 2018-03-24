@@ -7,12 +7,12 @@ props.hasPwrItem
 props.evYield
 */
 export default function calculateBattles(props) {
-    var battleText = "";
     const chainBonus = 2;
-    var evGain = props.evYield === "one" ? 1 : 2;
-    var noPwrItemGain = evGain;
-    var evNeeded = props.targetEVs - props.startingEVs;
-    var run = true;
+    const actions = [];
+    let evGain = props.evYield === "one" ? 1 : 2;
+    let noPwrItemGain = evGain;
+    let evNeeded = props.targetEVs - props.startingEVs;
+
     if (props.hasPwrItem) {
       evGain += 8;
     }
@@ -20,48 +20,33 @@ export default function calculateBattles(props) {
       evGain *= 2;
       noPwrItemGain *= 2;
     }
-    var currEVs = props.startingEVs;
-    var numChain = 1;
-    while (evNeeded > 0 && run) {
-      var evBattle = 0;
-      var numKills = 0;
+
+    let currEVs = props.startingEVs;
+    while (evNeeded > 0) {
+      let action;
+      let evBattle = 0;
+      let numKills = 0;
       if (evNeeded >= evGain * chainBonus && props.hasPwrItem) {
         evBattle = findEVs(evGain * chainBonus, evNeeded);
         numKills = Math.floor(evNeeded / evGain / chainBonus);
-        battleText +=
-          "For battle " +
-          numChain +
-          ", kill " +
-          numKills +
-          " (w/ power item + SOS).\n";
+        action = { kills: numKills, powerItem: true, sos: true };
       } else if (evNeeded >= evGain && props.hasPwrItem) {
         evBattle = findEVs(evGain, evNeeded);
-        battleText +=
-          "For battle " + numChain + ", kill 1 Pokemon (w/ power item).\n";
+        actions.push({ kills: numKills, powerItem: true, sos: false });
       } else if (evNeeded >= noPwrItemGain * chainBonus) {
         evBattle = findEVs(noPwrItemGain * chainBonus, evNeeded);
         numKills = Math.floor(evNeeded / noPwrItemGain / chainBonus);
-        battleText +=
-          "For battle " +
-          numChain +
-          ", kill " +
-          numKills +
-          " (no power item + SOS).\n";
+        action = { kills: numKills, powerItem: false, sos: true };
       } else {
-        evBattle = findEVs(noPwrItemGain, evNeeded);
-        if (evNeeded < noPwrItemGain) {
-          run = false;
-          evBattle = noPwrItemGain;
-        }
-        battleText +=
-          "For battle " + numChain + ", kill 1 Pokemon (no power item).\n";
+        evBattle = Math.max(findEVs(noPwrItemGain, evNeeded), noPwrItemGain);
+        action = { kills: 1, powerItem: false, sos: false };
       }
-      currEVs = parseInt(currEVs, 10) + parseInt(evBattle, 10);
-      battleText += "Current EVs: " + currEVs + ".\n";
-      evNeeded = parseInt(evNeeded, 10) - parseInt(evBattle, 10);
-      numChain = parseInt(numChain, 10) + 1;
+      currEVs += evBattle;
+      evNeeded -= evBattle;
+      action.currEvs = currEVs;
+      actions.push(action);
     }
-    return battleText;
+    return actions;
   }
   
   function findEVs(ev, total) {

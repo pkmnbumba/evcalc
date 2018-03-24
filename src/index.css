@@ -6,3 +6,7 @@ body {
 ol, ul {
   padding-left: 30px;
 }
+
+.mark {
+  color: black;
+}
