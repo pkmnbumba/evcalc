@@ -14,9 +14,22 @@ h1 {
 }
 
 .mainWrapper {
+  display: flex;
+  flex-direction: column;
   width: 500px;
+  height: 100vh;
   margin: 0 auto;
   padding-top: 100px;
+}
+
+.main {
+  flex-grow: 1;
+}
+
+footer {
+  font-weight: bold;
+  text-align: center;
+  padding: .5em 0;
 }
 
 input, select {
