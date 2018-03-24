@@ -8,7 +8,7 @@ export default class EVCalcResults extends React.Component {
       const res = calculateBattles(this.props.evCalcResultData);
       return (
         <div className="tableWrapper">
-          <table>
+          {res.length ? <table>
             <tbody>
               <tr>
                 <th>Chain</th>
@@ -27,7 +27,7 @@ export default class EVCalcResults extends React.Component {
                 </tr>
               )}
             </tbody>
-          </table>
+          </table> : 'Nothing to see here...'}
         </div>
       );
     }
