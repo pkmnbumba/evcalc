@@ -12,6 +12,7 @@ export default function calculateBattles(props) {
     let evGain = props.evYield === "one" ? 1 : 2;
     let noPwrItemGain = evGain;
     let evNeeded = props.targetEVs - props.startingEVs;
+    if (evGain === 2 && (evNeeded & 1)) evNeeded++;
 
     if (props.hasPwrItem) {
       evGain += 8;
@@ -32,14 +33,15 @@ export default function calculateBattles(props) {
         action = { kills: numKills, powerItem: true, sos: true };
       } else if (evNeeded >= evGain && props.hasPwrItem) {
         evBattle = findEVs(evGain, evNeeded);
-        action = { kills: numKills, powerItem: true, sos: false };
+        action = { kills: 1, powerItem: true, sos: false };
       } else if (evNeeded >= noPwrItemGain * chainBonus) {
         evBattle = findEVs(noPwrItemGain * chainBonus, evNeeded);
         numKills = Math.floor(evNeeded / noPwrItemGain / chainBonus);
         action = { kills: numKills, powerItem: false, sos: true };
       } else {
-        evBattle = Math.ceil(evNeeded / noPwrItemGain) * noPwrItemGain;
-        action = { kills: 1, powerItem: false, sos: false };
+        numKills = Math.ceil(evNeeded / noPwrItemGain);
+        evBattle = numKills * noPwrItemGain;
+        action = { kills: numKills, powerItem: false, sos: false };
       }
       currEVs += evBattle;
       evNeeded -= evBattle;
