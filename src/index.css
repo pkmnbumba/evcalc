@@ -1,4 +1,5 @@
-body, html {
+body,
+html {
   font-size: 16px;
   font-family: "Palatino", "Times New Roman", serif;
   padding: 0;
@@ -6,7 +7,8 @@ body, html {
 }
 
 h1 {
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
 * {
@@ -29,10 +31,11 @@ h1 {
 footer {
   font-weight: bold;
   text-align: center;
-  padding: .5em 0;
+  padding: 0.5em 0;
 }
 
-input, select {
+input,
+select {
   float: right;
 }
 
@@ -69,6 +72,7 @@ table {
   text-align: right;
 }
 
-th:first-child, td:first-child {
+th:first-child,
+td:first-child {
   text-align: left;
 }
