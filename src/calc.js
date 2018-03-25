@@ -43,9 +43,9 @@ export default function calculateBattles(props) {
       evBattle = numKills * noPwrItemGain;
       action = { kills: numKills, powerItem: false, sos: false };
     }
-    currEVs += evBattle;
-    evNeeded -= evBattle;
-    action.currEvs = currEVs;
+    currEVs += evBattle * 1;
+    evNeeded -= evBattle * 1;
+    action.currEvs = currEVs * 1;
     actions.push(action);
   }
   return actions;
